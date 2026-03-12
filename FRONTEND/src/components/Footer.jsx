@@ -7,14 +7,14 @@ export default function Footer() {
         color: "white",
         textAlign: "center",
         padding: "15px",
-        position: "fixed",   // sticks to bottom
+        position: "fixed",
         bottom: 0,
         left: 0,
         zIndex: 1000
       }}
     >
       <p style={{ margin: 0 }}>
-        © {new Date().getFullYear()} Admitto Visitor Management System. All rights reserved.
+        © {new Date().getFullYear()} Admitto Visitor Management System
       </p>
     </footer>
   );

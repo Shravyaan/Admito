@@ -1,13 +1,13 @@
 import { createContext, useState } from "react";
 
-export const VisitorContext = createContext();
+export const visitorContext = createContext();
 
 export function VisitorProvider({ children }) {
   const [visitors, setVisitors] = useState([]);
 
   return (
-    <VisitorContext.Provider value={{ visitors, setVisitors }}>
+    <visitorContext.Provider value={{ visitors, setVisitors }}>
       {children}
-    </VisitorContext.Provider>
+    </visitorContext.Provider>
   );
 }
