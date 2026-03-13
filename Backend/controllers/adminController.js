@@ -1,5 +1,5 @@
 const Admin = require("../models/Admin");
-const Announcement = require("../models/announcement"); // separate schema for announcements
+const Announcement = require("../models/Announcement"); // separate schema for announcements
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
