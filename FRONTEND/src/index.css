@@ -361,3 +361,25 @@ footer {
     transform: translateX(0);
   }
 }
+
+/* Find your mobile menu class, usually called .nav-menu.active or similar */
+.nav-menu {
+  /* ... existing styles (position: fixed, top: 80px, etc.) ... */
+  
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 80px); /* Ensures it doesn't go past the screen height */
+  overflow-y: auto; /* Adds a scrollbar if the list is too long */
+  padding-bottom: 20px; /* Space at the bottom */
+}
+
+/* Specifically style the Logout button to stand out in the mobile menu */
+.logout-btn {
+  background-color: #dc3545; /* Red color for visibility */
+  color: white !important;
+  margin: 10px 20px;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: bold;
+}
