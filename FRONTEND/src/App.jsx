@@ -11,6 +11,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Registration from "./Pages/Registration";
+import Logout from "./Pages/Logout";
 
 function Layout({ children }) {
   const location = useLocation();
@@ -66,6 +67,9 @@ export default function App() {
 
           {/* Registration */}
           <Route path="/register" element={<Registration />} />
+
+          {/* Logout */}
+          <Route path="/logout" element={<Logout />} />
         </Routes>
       </Layout>
     </Router>

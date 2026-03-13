@@ -1,111 +1,60 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getAllVisitors } from "../services/api"; // Ensure this path is correct
 
 export default function VisitorTable() {
-  const [visitors, setVisitors] = useState(() => {
-    const storedVisitors = JSON.parse(localStorage.getItem("visitors")) || [];
-    return storedVisitors;
-  });
+  const [visitors, setVisitors] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Delete visitor
-  const deleteVisitor = (id) => {
-    const updated = visitors.filter((v) => v.id !== id);
-    setVisitors(updated);
-    localStorage.setItem("visitors", JSON.stringify(updated));
-  };
+  // 1. Load data from Backend (Reflection)
+  useEffect(() => {
+    const fetchVisitors = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Get Admin Token
+        const data = await getAllVisitors(token);
+        
+        // Ensure we are setting an array even if data is empty
+        setVisitors(Array.isArray(data) ? data : []);
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to fetch visitors from MongoDB:", err);
+        setLoading(false);
+      }
+    };
+    fetchVisitors();
+  }, []);
 
-  // Edit visitor inline
-  const editVisitor = (id, field, value) => {
-    const updated = visitors.map((v) =>
-      v.id === id ? { ...v, [field]: value } : v
-    );
-    setVisitors(updated);
-    localStorage.setItem("visitors", JSON.stringify(updated));
-  };
+  if (loading) return <p>Fetching live visitor logs...</p>;
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Visitor List</h2>
+      <h2>Live Visitor Log (from Database)</h2>
       {visitors.length === 0 ? (
-        <p>No visitors added yet.</p>
+        <p>No visitors found in the system.</p>
       ) : (
-        <table border="1" cellPadding="10" style={{ width: "100%", marginTop: "10px" }}>
+        <table border="1" cellPadding="10" style={{ width: "100%", marginTop: "10px", borderCollapse: "collapse" }}>
           <thead>
-            <tr>
+            <tr style={{ backgroundColor: "#16b1c3" }}>
               <th>Name</th>
-              <th>Visit Category</th>
+              <th>Category</th>
               <th>Contact No</th>
-              <th>Address</th>
               <th>Vehicle No</th>
-              <th>Reason of Visit</th>
-              <th>Check‑in Time</th>
+              <th>Reason</th>
               <th>Status</th>
-              <th>Actions</th>
+              <th>Time</th>
             </tr>
           </thead>
           <tbody>
             {visitors.map((visitor) => (
-              <tr key={visitor.id}>
-                <td>
-                  <input
-                    type="text"
-                    value={visitor.name}
-                    onChange={(e) => editVisitor(visitor.id, "name", e.target.value)}
-                  />
+              <tr key={visitor._id}>
+                <td>{visitor.name}</td>
+                <td>{visitor.visitCategory}</td>
+                <td>{visitor.contactNumber}</td>
+                <td>{visitor.vehicleNumber || "N/A"}</td>
+                <td>{visitor.reasonOfVisit}</td>
+                <td style={{ color: visitor.status === "In" ? "green" : "red", fontWeight: "bold" }}>
+                  {visitor.status || "In"}
                 </td>
-                <td>
-                  <input
-                    type="text"
-                    value={visitor.visitCategory}
-                    onChange={(e) => editVisitor(visitor.id, "visitCategory", e.target.value)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="tel"
-                    value={visitor.contactNo}
-                    onChange={(e) => editVisitor(visitor.id, "contactNo", e.target.value)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    value={visitor.address}
-                    onChange={(e) => editVisitor(visitor.id, "address", e.target.value)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    value={visitor.vehicleNo}
-                    onChange={(e) => editVisitor(visitor.id, "vehicleNo", e.target.value)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    value={visitor.reason}
-                    onChange={(e) => editVisitor(visitor.id, "reason", e.target.value)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="time"
-                    value={visitor.checkInTime}
-                    onChange={(e) => editVisitor(visitor.id, "checkInTime", e.target.value)}
-                  />
-                </td>
-                <td>
-                  <select
-                    value={visitor.status}
-                    onChange={(e) => editVisitor(visitor.id, "status", e.target.value)}
-                  >
-                    <option value="Checked In">Checked In</option>
-                    <option value="Checked Out">Checked Out</option>
-                  </select>
-                </td>
-                <td>
-                  <button onClick={() => deleteVisitor(visitor.id)}>Delete</button>
-                </td>
+                <td>{new Date(visitor.createdAt).toLocaleString()}</td>
               </tr>
             ))}
           </tbody>
@@ -114,6 +63,3 @@ export default function VisitorTable() {
     </div>
   );
 }
-
-
-
