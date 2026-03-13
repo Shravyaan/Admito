@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:4500";
+const API_URL = "https://admito-2.onrender.com";
 
 // --- AUTH FUNCTIONS ---
 
